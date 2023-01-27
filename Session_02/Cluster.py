@@ -1,10 +1,10 @@
 class Cluster:
     def __init__(self):
-        self.centroids = None
-        self.member = []
+        self._centroid = None
+        self._members = []
     
-    def reset_member(self):
-        self.member = []
-    def add_member(self, member):
-        self.member.append(member)
+    def reset_members(self):
+        self._members = []
+    def add_members(self, member):
+        self._members.append(member)
         
