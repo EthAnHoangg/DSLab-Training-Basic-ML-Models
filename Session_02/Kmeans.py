@@ -65,13 +65,20 @@ class Kmeans:
         return max_similarity
 
     def update_centroid_of(self, cluster):
-        member_r_ds = [member._r_d for member in cluster._members]
-        # list of r_d of members in considering cluster
-        aver_r_d = np.mean(member_r_ds, axis=0)
-        # calcualter the mean of all members
-        sqrt_sum_sqr = np.sqrt(np.sum(aver_r_d ** 2))
-        new_centroid = np.array([value/sqrt_sum_sqr for value in aver_r_d])
-        cluster._centroid = new_centroid
+        if len(cluster._members) == 1:
+            cluster._centroid = cluster._members[0]._r_d
+        elif len(cluster._members) == 0:
+            pass
+        else:
+            member_r_ds = [member._r_d for member in cluster._members]
+            # list of r_d of members in considering cluster
+            aver_r_d = np.mean(member_r_ds, axis=0)
+            if type(aver_r_d) == np.float64:
+                print(len(member_r_ds))
+            # calcualter the mean of all members
+            sqrt_sum_sqr = np.sqrt(np.sum(aver_r_d ** 2))
+            new_centroid = np.array([value/sqrt_sum_sqr for value in aver_r_d])
+            cluster._centroid = new_centroid
 
     def stopping_condition(self, criterion, threshold):
         criteria = ["centroid", "similarity", "max_iters"]
@@ -100,15 +107,15 @@ class Kmeans:
             for cluster in self._cluster:
                 cluster.reset_members()  # empty the members of cluster but not the centroid
             self._new_S = 0
-            print("Selecting cluster for all members")
+            # print("Selecting cluster for all members")
             for member in self._data:
                 max_s = self.select_cluster_for(member)
                 self._new_S += max_s
-            print("Updated all members")
+            # print("Updated all members")
             for i, cluster in enumerate(self._cluster):
                 # print(i) #for debugging
                 self.update_centroid_of(cluster)
-            print("Updated centroids")
+            # print("Updated centroids")
             self._iteration += 1
             if self.stopping_condition(criterion, threshold):
                 break
